@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+
+import sys
+from datetime import datetime
+
+from PyQt5 import QtWidgets, QtGui, uic
+from PyQt5.QtGui import QStandardItem, QStandardItemModel
+
+from NetworkScan import *
+from PortScan import *
+
+class MystixTools(QtWidgets.QMainWindow):
+    def __init__(self):
+        self.log('Initialising MystixTools\n************************************************')
+        QtWidgets.QMainWindow.__init__(self)
+        self.ui = uic.loadUi('MystixTools.ui',self)
+
+        self.thread={}
+        self.ui.t2_pushButton_1.clicked.connect(self.start_network_scan)
+        self.ui.t2_pushButton_2.clicked.connect(self.stop_network_scan)
+
+        self.ui.t3_pushButton_1.clicked.connect(self.start_port_scan)
+        self.ui.t3_pushButton_2.clicked.connect(self.stop_port_scan)
+
+    def start_network_scan(self):
+        data = {
+            "t2_value_1": self.ui.t2_lineEdit_1.text(),
+        }
+        self.thread['NetworkScan'] = NetworkScan(parent=None, data=data)
+        self.thread['NetworkScan'].start()
+        self.thread['NetworkScan'].write_log_signal.connect(self.write_log)
+        self.thread['NetworkScan'].write_table_view_signal.connect(self.write_table_view)
+        self.thread['NetworkScan'].finished_signal.connect(self.finished)
+
+        self.ui.t2_pushButton_1.setEnabled(False)
+        self.ui.t2_pushButton_2.setEnabled(True)
+
+    def start_port_scan(self):
+        data = {
+            "t3_value_1": self.ui.t3_lineEdit_1.text(),
+            "t3_value_2": self.ui.t3_spinBox_1.value(),
+            "t3_value_3": self.ui.t3_spinBox_2.value(),
+            "t3_value_4": self.ui.t3_comboBox_1.currentIndex(),
+        }
+        self.thread['PortScan'] = PortScan(parent=None, data=data)
+        self.thread['PortScan'].start()
+        self.thread['PortScan'].write_log_signal.connect(self.write_log)
+        self.thread['PortScan'].write_table_view_signal.connect(self.write_table_view)
+        self.thread['PortScan'].write_port_scanner_result_signal.connect(self.write_port_scanner_result)
+        self.thread['PortScan'].finished_signal.connect(self.finished)
+
+        self.ui.t3_pushButton_1.setEnabled(False)
+        self.ui.t3_pushButton_2.setEnabled(True)
+
+    def stop_network_scan(self):
+        self.thread['NetworkScan'].stop()
+
+    def stop_port_scan(self):
+        self.thread['PortScan'].stop()
+
+    def write_table_view(self, data):
+        self.write_log(data)
+        index = self.sender().__class__.__name__
+        rows_len = len(data)
+        cols_len = len(data[0])
+        thead_x = data[0]
+        self.model = QStandardItemModel(rows_len-1, cols_len)
+        self.model.setHorizontalHeaderLabels(thead_x)
+        for row in range(rows_len)[1:]:
+            for col in range(cols_len):
+                item = QStandardItem(str(data[row][col]))
+                self.model.setItem(row-1, col, item)
+
+        if index == 'NetworkScan':
+            self.ui.t2_tableView_1.resizeColumnsToContents()
+            self.ui.t2_tableView_1.setModel(self.model)
+        if index == 'PortScan':
+            self.ui.t3_tableView_2.resizeColumnsToContents()
+            self.ui.t3_tableView_2.setModel(self.model)
+
+    def write_port_scanner_result(self, data):
+        self.write_log(data)
+        rows_len = sum(1 for e in data.values() if e != '')
+        cols_len = 1
+        self.model = QStandardItemModel(rows_len, cols_len)
+        i = -1
+        for key, value in data.items():
+            if value != '':
+                i += 1
+                self.model.setItem(i, 0, QStandardItem(key))
+                self.model.setItem(i, 1, QStandardItem(value))
+
+        self.ui.t3_tableView_1.setModel(self.model)
+        self.ui.t3_tableView_1.resizeColumnsToContents()
+
+    def finished(self):
+        index = self.sender().__class__.__name__
+        self.write_log('finished')
+        if index == 'NetworkScan':
+            self.ui.t2_pushButton_2.setEnabled(False)
+            self.ui.t2_pushButton_1.setEnabled(True)
+        if index == 'PortScan':
+            self.ui.t3_pushButton_2.setEnabled(False)
+            self.ui.t3_pushButton_1.setEnabled(True)
+
+    def write_log(self, data):
+        index = self.sender().__class__.__name__
+        msg = str(index) + ': ' + str(data)
+        self.log(msg)
+
+    def log(self, msg):
+        now = datetime.now()
+        datetime_str = now.strftime("%d.%m.%Y_%H-%M-%S")
+        msg = datetime_str + ':    ' + msg
+        print(msg)
+        f = open("MystixTools.log", "a")
+        f.write(msg + '\n')
+        f.close()
+
+app = QtWidgets.QApplication(sys.argv)
+mainWindow = MystixTools()
+mainWindow.show()
+sys.exit(app.exec_())

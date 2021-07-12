@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>331</width>
+    <height>612</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>logo_64.png</normaloff>logo_64.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <property name="elideMode">
+       <enum>Qt::ElideNone</enum>
+      </property>
+      <widget class="QWidget" name="tab_1">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>EvilTwin</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <layout class="QHBoxLayout" name="t1_hbox_1">
+          <item>
+           <layout class="QVBoxLayout" name="t1_vbox_1">
+            <item>
+             <widget class="QLabel" name="t1_label_1">
+              <property name="text">
+               <string>Create twin from</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="t1_label_2">
+              <property name="text">
+               <string>or set new SSID</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="t1_label_3">
+              <property name="text">
+               <string>Monitor Interface</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="t1_label_4">
+              <property name="text">
+               <string>Uplink interface</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="t1_vbox_2">
+            <item>
+             <layout class="QHBoxLayout" name="t1_hbox_2">
+              <item>
+               <widget class="QComboBox" name="t1_comboBox_1"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="t1_pushButton_1">
+                <property name="text">
+                 <string>Scan APs</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="t1_lineEdit_1"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="t1_lineEdit_2"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="t1_lineEdit_3"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="t1_checkBox_1">
+          <property name="text">
+           <string>Send deauth</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextBrowser" name="t1_textBrowser_1">
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustIgnored</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="t1_hbox_3">
+          <item>
+           <widget class="QPushButton" name="t1_pushButton_2">
+            <property name="text">
+             <string>Be evil</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="t1_pushButton_3">
+            <property name="text">
+             <string>Stop being evil</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>NetworkScanner</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="t2_hbox_1">
+          <item>
+           <widget class="QLabel" name="t2_label_1">
+            <property name="text">
+             <string>Network</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="t2_lineEdit_1">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>192.168.1.0/24</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableView" name="t2_tableView_1">
+          <property name="editTriggers">
+           <set>QAbstractItemView::CurrentChanged|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="gridStyle">
+           <enum>Qt::SolidLine</enum>
+          </property>
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderDefaultSectionSize">
+           <number>30</number>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="t2_hbox_2">
+          <item>
+           <widget class="QPushButton" name="t2_pushButton_1">
+            <property name="text">
+             <string>Scan network</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="t2_pushButton_2">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Stop Scan</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>PortScanner</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="t3_hbox_1">
+          <item>
+           <widget class="QLabel" name="t3_label_1">
+            <property name="text">
+             <string>IP</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="t3_lineEdit_1">
+            <property name="text">
+             <string>192.168.1.1</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="t3_hbox_2">
+          <item>
+           <widget class="QLabel" name="t3_label_2">
+            <property name="text">
+             <string>Port Range from</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="t3_spinBox_1">
+            <property name="maximum">
+             <number>65534</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="t3_label_3">
+            <property name="text">
+             <string>to</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="t3_spinBox_2">
+            <property name="maximum">
+             <number>65535</number>
+            </property>
+            <property name="value">
+             <number>1023</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QComboBox" name="t3_comboBox_1">
+          <item>
+           <property name="text">
+            <string>Syn Ack scan (stealth)</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Comprehensive scan</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="t3_tableView_1">
+          <attribute name="horizontalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="t3_tableView_2">
+          <attribute name="horizontalHeaderVisible">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderStretchLastSection">
+           <bool>false</bool>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="t3_hbox_3">
+          <item>
+           <widget class="QPushButton" name="t3_pushButton_1">
+            <property name="text">
+             <string>Scan ports</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="t3_pushButton_2">
+            <property name="text">
+             <string>Stop scan</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Sniffer</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <layout class="QHBoxLayout" name="t4_hbox_1">
+          <item>
+           <widget class="QLabel" name="t4_label_1">
+            <property name="text">
+             <string>Interface</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="t4_lineEdit_1"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableView" name="t4_tableView_1"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="t4_hbox_2">
+          <item>
+           <widget class="QPushButton" name="t4_pushButton_1">
+            <property name="text">
+             <string>Sniff</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="t4_pushButton_2">
+            <property name="text">
+             <string>Stop sniffing</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
