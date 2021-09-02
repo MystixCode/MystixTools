@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>MystixTools</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -25,7 +25,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="elideMode">
        <enum>Qt::ElideNone</enum>
@@ -95,10 +95,10 @@
              <widget class="QLineEdit" name="t1_lineEdit_1"/>
             </item>
             <item>
-             <widget class="QLineEdit" name="t1_lineEdit_2"/>
+             <widget class="QComboBox" name="t1_comboBox_2"/>
             </item>
             <item>
-             <widget class="QLineEdit" name="t1_lineEdit_3"/>
+             <widget class="QComboBox" name="t1_comboBox_3"/>
             </item>
            </layout>
           </item>
@@ -129,6 +129,9 @@
           </item>
           <item>
            <widget class="QPushButton" name="t1_pushButton_3">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Stop being evil</string>
             </property>
@@ -288,7 +291,7 @@
              <number>65535</number>
             </property>
             <property name="value">
-             <number>1023</number>
+             <number>65535</number>
             </property>
            </widget>
           </item>
@@ -372,7 +375,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="t4_lineEdit_1"/>
+           <widget class="QComboBox" name="t4_comboBox_1"/>
           </item>
          </layout>
         </item>
@@ -390,12 +393,29 @@
           </item>
           <item>
            <widget class="QPushButton" name="t4_pushButton_2">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="text">
              <string>Stop sniffing</string>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_5">
+       <attribute name="title">
+        <string>SSLStrip</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>TODO</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>

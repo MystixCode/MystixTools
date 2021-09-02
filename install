@@ -1,0 +1,9 @@
+#TODO
+
+#!/bin/bash
+
+#1. copy dir to opt
+
+#2. create bash starter in /usr/bin
+
+#3. <username>  ALL = NOPASSWD: /etc/init.d/postfix

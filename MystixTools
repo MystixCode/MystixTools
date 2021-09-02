@@ -1,27 +1,103 @@
 #!/usr/bin/env python3
 
+#TODO create install script that sets sudo permissions etc or a little c binary with setuid ???
+#TODO install script: dependencies check install: iw, aircrack-ng scapy, nmcli, nmap, python3-psutil, brctl etc
+
+#TODO scan_aps need to be a thread to not block gui
+#TODO wifi region comboBox https://gist.github.com/ssskip/5a94bfcd2835bf1dea52
+#TODO wifi channel spinbox
+#TODO: validate all input data and minimal errorhandling
+
 import sys
+import os
 from datetime import datetime
+from netifaces import interfaces
+from subprocess import Popen
+from subprocess import PIPE
 
 from PyQt5 import QtWidgets, QtGui, uic
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
 
+from EvilTwin import *
 from NetworkScan import *
 from PortScan import *
+from Sniffer import *
 
 class MystixTools(QtWidgets.QMainWindow):
     def __init__(self):
         self.log('Initialising MystixTools\n************************************************')
         QtWidgets.QMainWindow.__init__(self)
-        self.ui = uic.loadUi('MystixTools.ui',self)
-
+        
+        os.path.abspath(os.path.dirname(__file__))
+        self.ui = uic.loadUi(os.path.abspath(os.path.dirname(__file__)) + '/MystixTools.ui',self)
         self.thread={}
+        
+        #self.refresh_aps()
+        self.ui.t1_pushButton_1.clicked.connect(self.refresh_aps)
+        self.ui.t1_comboBox_2.addItems(self.get_ifaces())
+        self.ui.t1_comboBox_3.addItems(self.get_ifaces())
+        self.ui.t1_pushButton_2.clicked.connect(self.start_evil_twin)
+        self.ui.t1_pushButton_3.clicked.connect(self.stop_evil_twin)
+        
         self.ui.t2_pushButton_1.clicked.connect(self.start_network_scan)
         self.ui.t2_pushButton_2.clicked.connect(self.stop_network_scan)
 
         self.ui.t3_pushButton_1.clicked.connect(self.start_port_scan)
         self.ui.t3_pushButton_2.clicked.connect(self.stop_port_scan)
+        
+        self.ui.t4_comboBox_1.addItems(self.get_ifaces())
+        self.ui.t4_pushButton_1.clicked.connect(self.start_sniffer)
+        self.ui.t4_pushButton_2.clicked.connect(self.stop_sniffer)
+        
+    def closeEvent(self, event):
+        #TODO: add is_running to every thread and check them in a loop here
+        if 'EvilTwin' in self.thread and self.thread['EvilTwin'].is_running == True:
+            self.stop_evil_twin()
+        event.accept()
+        
+    def get_ifaces(self):
+        ifaces = interfaces()
+        ifaces.remove('lo')
+        ifaces.sort()
+        return ifaces
+        
+    def scan_aps(self):
+        cmd=['nmcli radio wifi on; sleep 4; nmcli -m tabular -t -f bssid,ssid,chan,security,bars device wifi list && exit']
+        aps = []
+        with Popen(cmd, shell=True, stdout=PIPE, encoding="UTF-8") as self.p:
+            output = self.p.communicate()[0].strip().split('\n')            
+            for row in output:
+                values = row.replace("\:", "~^~")
+                ap = values.split(':')
+                ap[0] = ap[0].replace( "~^~",":")
+                aps.append(ap)
+        return aps
+             
+    def refresh_aps(self):
+        aps = self.scan_aps()
+        self.ui.t1_comboBox_1.clear()
+        for ap in aps:
+            self.ui.t1_comboBox_1.addItem(ap[0] + '  ' + ap[1] + '  ' + ap[2] + '  ' + ap[3] + '  ' + ap[4])
 
+    def start_evil_twin(self):
+        data = {
+            "t1_value_1": self.ui.t1_comboBox_1.currentText(),
+            "t1_value_2": self.ui.t1_lineEdit_1.text(),
+            "t1_value_3": self.ui.t1_comboBox_2.currentText(),
+            "t1_value_4": self.ui.t1_comboBox_3.currentText(),
+            "t1_value_5": self.ui.t1_checkBox_1.isChecked(),
+        }
+        self.thread['EvilTwin'] = EvilTwin(parent=None, data=data)
+        self.thread['EvilTwin'].start()
+        self.thread['EvilTwin'].write_log_signal.connect(self.write_log)
+        #TODO: add new signal here
+        self.thread['EvilTwin'].write_list_signal.connect(self.write_list)
+
+        self.thread['EvilTwin'].finished_signal.connect(self.finished)
+
+        self.ui.t1_pushButton_2.setEnabled(False)
+        self.ui.t1_pushButton_3.setEnabled(True)       
+        
     def start_network_scan(self):
         data = {
             "t2_value_1": self.ui.t2_lineEdit_1.text(),
@@ -51,12 +127,30 @@ class MystixTools(QtWidgets.QMainWindow):
 
         self.ui.t3_pushButton_1.setEnabled(False)
         self.ui.t3_pushButton_2.setEnabled(True)
+        
+    def start_sniffer(self):
+        data = {
+            "t4_value_1": self.ui.t4_comboBox_1.currentText(),
+        }
+        self.thread['Sniffer'] = Sniffer(parent=None, data=data)
+        self.thread['Sniffer'].start()
+        self.thread['Sniffer'].write_log_signal.connect(self.write_log)
+        self.thread['Sniffer'].finished_signal.connect(self.finished)
+
+        self.ui.t4_pushButton_1.setEnabled(False)
+        self.ui.t4_pushButton_2.setEnabled(True)
+
+    def stop_evil_twin(self):
+        self.thread['EvilTwin'].stop()
 
     def stop_network_scan(self):
         self.thread['NetworkScan'].stop()
 
     def stop_port_scan(self):
         self.thread['PortScan'].stop()
+
+    def stop_sniffer(self):
+        self.thread['Sniffer'].stop()
 
     def write_table_view(self, data):
         self.write_log(data)
@@ -92,16 +186,27 @@ class MystixTools(QtWidgets.QMainWindow):
 
         self.ui.t3_tableView_1.setModel(self.model)
         self.ui.t3_tableView_1.resizeColumnsToContents()
+        
+    def write_list(self, data):
+        self.write_log(data)
+        self.ui.t1_textBrowser_1.append(str(data))
+        
 
     def finished(self):
         index = self.sender().__class__.__name__
         self.write_log('finished')
+        if index == 'EvilTwin':
+            self.ui.t1_pushButton_3.setEnabled(False)
+            self.ui.t1_pushButton_2.setEnabled(True)
         if index == 'NetworkScan':
             self.ui.t2_pushButton_2.setEnabled(False)
             self.ui.t2_pushButton_1.setEnabled(True)
         if index == 'PortScan':
             self.ui.t3_pushButton_2.setEnabled(False)
             self.ui.t3_pushButton_1.setEnabled(True)
+        if index == 'Sniffer':
+            self.ui.t4_pushButton_2.setEnabled(False)
+            self.ui.t4_pushButton_1.setEnabled(True)
 
     def write_log(self, data):
         index = self.sender().__class__.__name__
