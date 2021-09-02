@@ -1,7 +1,7 @@
 # MystixTools
-some python3 tools..
-work in progress..
-not fully functional yet..
+some python3 tools..  
+work in progress..  
+not fully functional yet..  
 
 ## Dependencies
  - Linux
